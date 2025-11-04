@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертер Цветов (Вариант 8: RGB-XYZ-HSV)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Конвертер цветовых моделей</h1>
+        <p>Вариант 8: RGB ↔ XYZ ↔ HSV</p>
+
+        <div class="main-content">
+            <div class="color-preview-wrapper">
+                <input type="color" id="color-picker" value="#8c3cd8">
+                
+                <div id="gamut-warning" class="warning hidden">
+                    Внимание: Цвет находится вне цветового охвата sRGB и был скорректирован.
+                </div>
+            </div>
+
+            <div class="color-models">
+                <div class="model-card">
+                    <h2>RGB</h2>
+                    <div class="control-group">
+                        <label for="r-range">R</label>
+                        <input type="range" id="r-range" class="slider" min="0" max="255" step="1">
+                        <input type="number" id="r-input" min="0" max="255">
+                    </div>
+                    <div class="control-group">
+                        <label for="g-range">G</label>
+                        <input type="range" id="g-range" class="slider" min="0" max="255" step="1">
+                        <input type="number" id="g-input" min="0" max="255">
+                    </div>
+                    <div class="control-group">
+                        <label for="b-range">B</label>
+                        <input type="range" id="b-range" class="slider" min="0" max="255" step="1">
+                        <input type="number" id="b-input" min="0" max="255">
+                    </div>
+                </div>
+
+                <div class="model-card">
+                    <h2>XYZ</h2>
+                    <div class="control-group">
+                        <label for="x-range">X</label>
+                        <input type="range" id="x-range" class="slider" min="0" max="95.047" step="0.001">
+                        <input type="number" id="x-input" min="0" max="95.047" step="0.001">
+                    </div>
+                    <div class="control-group">
+                        <label for="y-range">Y</label>
+                        <input type="range" id="y-range" class="slider" min="0" max="100.000" step="0.001">
+                        <input type="number" id="y-input" min="0" max="100.000" step="0.001">
+                    </div>
+                    <div class="control-group">
+                        <label for="z-range">Z</label>
+                        <input type="range" id="z-range" class="slider" min="0" max="108.883" step="0.001">
+                        <input type="number" id="z-input" min="0" max="108.883" step="0.001">
+                    </div>
+                </div>
+
+                <div class="model-card">
+                    <h2>HSV</h2>
+                    <div class="control-group">
+                        <label for="h-range">H</label>
+                        <input type="range" id="h-range" class="slider" min="0" max="360" step="1">
+                        <input type="number" id="h-input" min="0" max="360">
+                    </div>
+                    <div class="control-group">
+                        <label for="s-range">S</label>
+                        <input type="range" id="s-range" class="slider" min="0" max="100" step="1">
+                        <input type="number" id="s-input" min="0" max="100">
+                    </div>
+                    <div class="control-group">
+                        <label for="v-range">V</label>
+                        <input type="range" id="v-range" class="slider" min="0" max="100" step="1">
+                        <input type="number" id="v-input" min="0" max="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
