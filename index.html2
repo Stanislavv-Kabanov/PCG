@@ -1,0 +1,398 @@
+    <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализатор Изображений</title>
+    <script src="https://unpkg.com/exifreader@4.2.0/dist/exifreader.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        p {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #555;
+            font-size: 1.1em;
+        }
+        .input-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .button-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+        .button-wrapper:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .button-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .status-section {
+            background-color: #e9f5ff;
+            border: 1px solid #cce5ff;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1em;
+            color: #0056b3;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-item span {
+            font-weight: 600;
+            color: #007bff;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 15px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: #28a745;
+            border-radius: 5px;
+            transition: width 0.3s ease-out;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        tbody tr:hover {
+            background-color: #f1f7ff;
+            transition: background-color 0.2s ease;
+        }
+        td {
+            color: #333;
+            font-size: 0.95em;
+        }
+        .error-row {
+            background-color: #ffe6e6 !important;
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+        .error-row td {
+            color: #dc3545 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Анализатор Изображений</h1>
+        <p>Выберите файлы или папку для получения подробной информации об изображениях (размер, глубина цвета, сжатие).</p>
+
+        <div class="input-section">
+            <div class="button-wrapper">
+                <span>Выбрать отдельные файлы</span>
+                <input type="file" id="fileInputFiles" accept="image/*" multiple>
+            </div>
+            <div class="button-wrapper">
+                <span>Выбрать папку с файлами</span>
+                <input type="file" id="fileInputFolder" accept="image/*" webkitdirectory directory>
+            </div>
+        </div>
+
+        <div class="status-section">
+            <div class="status-item">
+                <span>Обработано файлов:</span> <span id="fileCount">0 / 0</span>
+            </div>
+            <div class="status-item">
+                <span>Общий размер:</span> <span id="totalSize">0.00</span> МБ
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Имя файла</th>
+                        <th>Формат</th>
+                        <th>Размер (Ш × В)</th>
+                        <th>Глубина цвета</th>
+                        <th>Сжатие</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const fileInputFiles = document.getElementById('fileInputFiles');
+        const fileInputFolder = document.getElementById('fileInputFolder');
+        const tbody = document.getElementById('resultTableBody');
+        const fileCountEl = document.getElementById('fileCount');
+        const totalSizeEl = document.getElementById('totalSize');
+        const progressFill = document.getElementById('progressFill');
+
+        fileInputFiles.addEventListener('change', (e) => handleFileSelection(e.target.files));
+        fileInputFolder.addEventListener('change', (e) => handleFileSelection(e.target.files));
+
+        async function handleFileSelection(files) {
+            const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+            if (imageFiles.length === 0) {
+                alert('Пожалуйста, выберите хотя бы одно изображение.');
+                return;
+            }
+
+            tbody.innerHTML = '';
+            progressFill.style.width = '0%';
+            fileCountEl.textContent = `0 / ${imageFiles.length}`;
+            totalSizeEl.textContent = '0.00';
+            
+            let totalSize = 0;
+
+            for (let i = 0; i < imageFiles.length; i++) {
+                const file = imageFiles[i];
+                
+                try {
+                    const fileData = await processSingleFile(file);
+                    addTableRow(file, fileData);
+                    totalSize += file.size;
+                } catch (error) {
+                    console.error(`Критическая ошибка при обработке файла ${file.name}:`, error);
+                    addErrorRow(file);
+                }
+                fileCountEl.textContent = `${i + 1} / ${imageFiles.length}`;
+                totalSizeEl.textContent = (totalSize / (1024 * 1024)).toFixed(2);
+                progressFill.style.width = `${((i + 1) / imageFiles.length) * 100}%`;
+            }
+        }
+
+        async function processSingleFile(file) {
+            const [basicInfo, metaInfo] = await Promise.all([
+                getBasicImageInfo(file),
+                getMetaData(file)
+            ]);
+            
+            const colorDepth = await getColorDepth(file, metaInfo);
+
+            return {
+                ...basicInfo,
+                format: file.name.split('.').pop().toUpperCase(),
+                compression: getCompression(file, metaInfo),
+                colorDepth: colorDepth,
+            };
+        }
+
+        async function getColorDepth(file, meta) {
+            const ext = file.name.split('.').pop().toLowerCase();
+
+            if (ext === 'bmp') {
+                const bmpDepth = await readBmpBitDepth(file);
+                if (bmpDepth !== null) {
+                    console.log(`[ОТЛАДКА BMP] Файл: ${file.name}. Прочитанная глубина: ${bmpDepth} бит.`);
+                    return `${bmpDepth} бит`;
+                }
+            }
+            
+            if (ext === 'png') {
+                const pngDepth = await readPngBitDepth(file);
+                if (pngDepth) return pngDepth;
+            }   
+
+            const bitsPerSample = meta?.ifd0?.BitsPerSample?.value;
+            if (Array.isArray(bitsPerSample)) {
+                return `${bitsPerSample.reduce((a, b) => a + b, 0)} бит`;
+            }
+
+            if (ext === 'gif') return '8 бит';
+            if (ext === 'jpg' || ext === 'jpeg') return '24 бита';
+            
+            return 'Н/Д';
+        }
+
+        function readBmpBitDepth(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const dataView = new DataView(event.target.result);
+                        const bitDepth = dataView.getUint16(28, true);
+                        resolve(bitDepth);
+                    } catch {
+                        resolve(null);
+                    }
+                };
+                reader.onerror = () => resolve(null);
+                reader.readAsArrayBuffer(file.slice(0, 30));
+            });
+        }
+
+        async function readPngBitDepth(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const dataView = new DataView(event.target.result);
+
+                        const pngSignature = [0x89, 0x50, 0x4E, 0x47];
+                        for (let i = 0; i < 4; i++) {
+                            if (dataView.getUint8(i) !== pngSignature[i]) {
+                                resolve(null);
+                                return;
+                            }
+                        }
+
+                        const bitDepth = dataView.getUint8(24);
+                        const colorType = dataView.getUint8(25);
+
+                        let description = `${bitDepth} бит`;
+                        if (colorType === 2) description = `${bitDepth * 3} бит`; 
+                        if (colorType === 6) description = `${bitDepth * 4} бит`; 
+                        if (colorType === 3) description = `${bitDepth} бит (индекс.)`; 
+
+                        resolve(description);
+                    } catch {
+                        resolve(null);
+                    }
+                };
+                reader.onerror = () => resolve(null);
+                reader.readAsArrayBuffer(file.slice(0, 30));
+            });
+        }
+
+
+        function getBasicImageInfo(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    resolve({ width: img.naturalWidth, height: img.naturalHeight });
+                };
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject("Не удалось прочитать размеры изображения");
+                };
+                img.src = url;
+            });
+        }
+
+        async function getMetaData(file) {
+            try {
+                if (typeof ExifReader === 'undefined') {
+                    console.warn("ExifReader не загружен. Метаданные не будут доступны.");
+                    return null;
+                }
+                return await ExifReader.load(file);
+            } catch (e) {
+                console.warn(`Ошибка при чтении метаданных для файла ${file.name}:`, e);
+                return null;
+            }
+        }
+
+        function getCompression(file, meta) {
+            if (meta?.ifd0?.Compression?.description) return meta.ifd0.Compression.description;
+            const ext = file.name.split('.').pop().toLowerCase();
+            switch (ext) {
+                case 'jpg': case 'jpeg': return 'JPEG';
+                case 'png': return 'LZ77';
+                case 'gif': return 'LZW';
+                case 'bmp': return 'Без сжатия';
+            }
+            return 'Н/Д';
+        }
+
+
+        function addTableRow(file, data) {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td title="${file.webkitRelativePath || file.name}">${truncateName(file.name)}</td>
+                <td>${data.format}</td>
+                <td>${data.width} × ${data.height}</td>
+                <!-- data.dpi удален -->
+                <td>${data.colorDepth}</td>
+                <td>${data.compression}</td>
+            `;
+        }
+
+        function addErrorRow(file) {
+            const row = tbody.insertRow();
+            row.classList.add('error-row');
+            row.innerHTML = `<td title="${file.webkitRelativePath || file.name}">${truncateName(file.name)}</td><td colspan="4">Ошибка: не удалось прочитать файл</td>`;
+        }
+
+        function truncateName(name) {
+            if (name.length > 40) return `${name.substring(0, 20)}...${name.substring(name.length - 15)}`;
+            return name;
+        }
+    </script>
+</body>
+</html>
