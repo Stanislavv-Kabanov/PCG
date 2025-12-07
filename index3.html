@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №8 (JavaScript)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Лабораторная работа №8: Обработка изображений (Client-Side JS)</h1>
+        <p>Все вычисления производятся в вашем браузере с помощью JavaScript.</p>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="fileInput">1. Выберите файл изображения</label>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            
+            <div class="control-group">
+                <label for="processing_type">2. Выберите метод обработки</label>
+                <select id="processing_type">
+                    <optgroup label="Адаптивная обработка (из лекции)">
+                        <option value="adaptive_lecture">Адаптивная пороговая обработка</option>
+                    </optgroup>
+                    <optgroup label="Высокочастотные фильтры (Резкость)">
+                        <option value="sharpen">Простой фильтр резкости</option>
+                        <option value="laplacian">Фильтр Лапласа</option>
+                    </optgroup>
+                    <optgroup label="Глобальная пороговая обработка">
+                        <option value="global_manual">Ручной порог</option>
+                        <option value="global_otsu">Метод Оцу</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <h3>3. Настройте параметры</h3>
+                <!-- Параметры для Адаптивной обработки -->
+                <div id="params-adaptive_lecture" class="params-block">
+                    <label for="k_param">Параметр K (окно 2K+1): <span id="k_value">5</span></label>
+                    <input type="range" id="k_param" min="1" max="20" value="5">
+                    
+                    <label for="alpha_param">Константа α (альфа): <span id="alpha_value">0.67</span></label>
+                    <input type="range" id="alpha_param" min="0.3" max="0.8" step="0.01" value="0.67">
+                </div>
+                <!-- Параметры для Глобальной ручной обработки -->
+                <div id="params-global_manual" class="params-block" style="display: none;">
+                    <label for="threshold_value">Значение порога: <span id="threshold_display">127</span></label>
+                    <input type="range" id="threshold_value" min="0" max="255" value="127">
+                </div>
+            </div>
+
+            <button id="processButton" class="submit-btn" disabled>Обработать</button>
+        </div>
+        
+        <div id="loader" class="loader" style="display: none;">
+            <p>Идет обработка... Это может занять некоторое время.</p>
+        </div>
+
+        <div class="results">
+            <div class="image-box">
+                <h2>Оригинал</h2>
+                <canvas id="originalCanvas"></canvas>
+            </div>
+            <div class="image-box">
+                <h2>Результат</h2>
+                <canvas id="processedCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
