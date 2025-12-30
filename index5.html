@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алгоритмы отсечения (Декартова система)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Алгоритмы отсечения отрезков</h1>
+    <div class="main-container">
+        
+        <div class="controls">
+            <h2>Панель управления</h2>
+            
+            <div class="control-group">
+                <label for="algorithm-select">Выберите алгоритм:</label>
+                <select id="algorithm-select">
+                    <option value="liang-barsky">Часть 1: Лианг-Барски (прямоугольник)</option>
+                    <option value="cyrus-beck">Часть 2: Кирус-Бек (выпуклый многоугольник)</option>
+                </select>
+            </div>
+
+            <div id="rect-inputs" class="control-group">
+                <label>Координаты окна отсечения (Xmin Ymin Xmax Ymax):</label>
+                <textarea id="clipping-rect" rows="2">-150 -150 150 150</textarea>
+            </div>
+
+            <div id="polygon-inputs" class="control-group hidden">
+                <label>Координаты вершин многоугольника (X1 Y1, X2 Y2, ...):</label>
+                <textarea id="clipping-polygon" rows="4">0 200, 250 50, 100 -200, -150 -100</textarea>
+                <small>Вершины должны быть перечислены против часовой стрелки.</small>
+            </div>
+
+            <div class="control-group">
+                <label>Координаты отрезков (X1 Y1 X2 Y2 на каждой строке):</label>
+                <textarea id="lines-input" rows="8">-250 200 250 -200
+-250 0 250 0
+0 200 0 -200
+-180 170 180 -170
+-250 100 -50 200
+150 -200 250 -100</textarea>
+            </div>
+
+            <button id="draw-button">Выполнить отсечение</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="main-canvas" width="600" height="500"></canvas>
+            <p id="coords-display" style="text-align: center; color: #555; margin-top: 5px;">Наведите курсор на холст</p>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
