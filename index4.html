@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ЛР: Базовые растровые алгоритмы</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Визуализация базовых растровых алгоритмов</h1>
+    
+    <main>
+        <canvas id="rasterCanvas" width="800" height="800"></canvas>
+    </main>
+
+    <aside>
+        <div class="panel controls">
+            <h2>Управление</h2>
+            <div class="input-group">
+                <h3>Масштаб</h3>
+                <label for="scale">Grid:</label>
+                <input type="range" id="scale" min="5" max="50" value="20"> <span id="scaleValue">20px</span>
+            </div>
+
+            <fieldset>
+                <legend>Отрезок</legend>
+                <label for="x1">X1, Y1:</label> <input type="number" id="x1" value="2">, <input type="number" id="y1" value="3"> <br>
+                <label for="x2">X2, Y2:</label> <input type="number" id="x2" value="18">, <input type="number" id="y2" value="8">
+            </fieldset>
+            
+            <fieldset>
+                <legend>Окружность</legend>
+                <label for="xc">Xс, Yс:</label> <input type="number" id="xc" value="-5">, <input type="number" id="yc" value="-5"> <br>
+                <label for="r">Радиус:</label> <input type="number" id="r" value="12">
+            </fieldset>
+
+            <fieldset>
+                <legend>Выбрать алгоритмы</legend>
+                <div><input type="checkbox" id="runStepByStep" checked> <label for="runStepByStep">Пошаговый (красный)</label></div>
+                <div><input type="checkbox" id="runDda" checked> <label for="runDda">ЦДА (зеленый)</label></div>
+                <div><input type="checkbox" id="runBresenhamLine" checked> <label for="runBresenhamLine">Брезенхем - отрезок (синий)</label></div>
+                <div><input type="checkbox" id="runBresenhamCircle" checked> <label for="runBresenhamCircle">Брезенхем - окружность (фиолетовый)</label></div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Настройки вывода</legend>
+                <div><input type="checkbox" id="showLogs"> <label for="showLogs">Показывать пошаговые вычисления</label></div>
+            </fieldset>
+
+            <button id="drawButton">Нарисовать</button>
+            <button id="clearButton">Очистить</button>
+        </div>
+
+        <div class="panel results">
+            <h2>Результаты</h2>
+            <div id="timingResults"></div>
+            <pre id="results-log"></pre>
+        </div>
+    </aside>
+
+    <script src="script.js"></script>
+</body>
+</html>
